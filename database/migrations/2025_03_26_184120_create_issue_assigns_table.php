@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Team;
+use App\Models\Issue;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,21 +9,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('team_members', function (Blueprint $table) {
-            $table->foreignIdFor(Team::class)
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+        Schema::create('issue_assigns', function (Blueprint $table) {
             $table->foreignIdFor(User::class)
                 ->constrained()
-                ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->primary('team_id', 'user_id');
+            $table->foreignIdFor(Issue::class)
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->primary('user_id', 'issue_id');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('team_members');
+        Schema::dropIfExists('issue_assigns');
     }
 };
