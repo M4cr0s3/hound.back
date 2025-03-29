@@ -5,7 +5,7 @@ namespace App\Core\Middlewares;
 use Closure;
 use Illuminate\Http\Request;
 
-class JsonMiddleware
+final readonly class JsonMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
