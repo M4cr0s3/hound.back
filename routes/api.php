@@ -1,26 +1,7 @@
 <?php
 
-use App\Modules\Authorization\Controller\AuthController;
-use App\Modules\Project\Controller\ProjectController;
+require_once __DIR__ . '/auth.php';
 
-Route::group(['prefix' => 'projects'], function () {
+require_once __DIR__ . '/projects.php';
 
-    Route::get('/', [ProjectController::class, 'index']);
-
-});
-
-
-Route::group(['prefix' => 'auth'], function () {
-
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-
-    Route::group(['middleware' => 'jwt.auth'], function () {
-
-        Route::get('/user', [AuthController::class, 'user']);
-        Route::get('/refresh', [AuthController::class, 'refresh']);
-        Route::get('/logout', [AuthController::class, 'logout']);
-
-    });
-
-});
+require_once __DIR__ . '/teams.php';
