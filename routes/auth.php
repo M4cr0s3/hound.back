@@ -10,9 +10,12 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
 
         Route::get('/user', [AuthController::class, 'user']);
-        Route::get('/refresh', [AuthController::class, 'refresh']);
         Route::get('/logout', [AuthController::class, 'logout']);
 
     });
 
+
+    Route::get('/refresh', [AuthController::class, 'refresh']);
 });
+
+// TODO: Add refresh token

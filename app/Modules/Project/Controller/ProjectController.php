@@ -46,6 +46,7 @@ final readonly class ProjectController
         return response()->json([
             'success' => true,
             'message' => 'Project updated successfully',
+            'data' => new ProjectResource($project),
         ]);
     }
 

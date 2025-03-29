@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Event\Casts\Metadata;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,7 +32,7 @@ final class Event extends Model
     {
         return [
             'event_id' => 'string',
-            'metadata' => 'array',
+            'metadata' => Metadata::class,
         ];
     }
 }

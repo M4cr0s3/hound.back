@@ -17,6 +17,7 @@ final class UpdateProjectRequest extends FormRequest
                 Rule::unique('projects')->ignore($this->project),
             ],
             'slug' => [
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('projects')->ignore($this->project),

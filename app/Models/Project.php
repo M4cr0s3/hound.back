@@ -21,4 +21,9 @@ final class Project extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }
