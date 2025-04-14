@@ -21,8 +21,7 @@ final readonly class RepositoryData
         public int $forksCount,
         public int $starsCount,
         public int $watchersCount
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

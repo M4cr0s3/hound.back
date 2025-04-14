@@ -2,24 +2,23 @@
 
 namespace App\Modules\Integration\Github;
 
-
 use App\Modules\Integration\Github\DTOs\RepositoryData;
 use Firebase\JWT\JWT;
+use Illuminate\Http\Client\Factory as HttpClient;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\Client\Factory as HttpClient;
 
 final readonly class GithubApiClient
 {
     private const BASE_URL = 'https://api.github.com';
+
     private const CACHE_TTL = 3600; // 1 hour
 
     public function __construct(
         private HttpClient $httpClient,
         private string $appId,
         private string $privateKey,
-    ) {
-    }
+    ) {}
 
     public function getRepository(string $owner, string $repo): RepositoryData
     {
@@ -30,7 +29,7 @@ final readonly class GithubApiClient
             throw RepositoryNotFoundException::forRepository($owner, $repo);
         }
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             throw GitHubApiException::fromResponse($response);
         }
 
@@ -42,7 +41,7 @@ final readonly class GithubApiClient
         return Cache::remember(
             key: 'github_token_'.$this->appId,
             ttl: self::CACHE_TTL - 300,
-            callback: fn() => $this->httpClient->withHeaders([
+            callback: fn () => $this->httpClient->withHeaders([
                 'Accept' => 'application/vnd.github+json',
                 'Authorization' => 'Bearer '.$this->generateJwtToken(),
                 'X-GitHub-Api-Version' => '2022-11-28',

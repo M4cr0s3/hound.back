@@ -16,7 +16,7 @@ final readonly class GithubRepositoryProvider
     public function getRepositoryByUrl(string $url): RepositoryData
     {
         $pattern = '#github\.com/([^/]+)/([^/]+)#';
-        if (!preg_match($pattern, $url, $matches)) {
+        if (! preg_match($pattern, $url, $matches)) {
             throw new \InvalidArgumentException('Invalid GitHub repository URL');
         }
 

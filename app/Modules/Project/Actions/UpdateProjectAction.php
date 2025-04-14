@@ -8,7 +8,7 @@ final readonly class UpdateProjectAction
 {
     public function execute(Project $project, array $data): void
     {
-        if (isset($data['name']) && !isset($data['slug'])) {
+        if (isset($data['name']) && ! isset($data['slug'])) {
             $data['slug'] = \Str::slug($data['name']);
         }
 

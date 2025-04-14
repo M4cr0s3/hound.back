@@ -5,7 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
@@ -23,6 +24,11 @@ return new class extends Migration {
             $table->jsonb('metadata');
             $table->unsignedInteger('count');
             $table->timestamps();
+
+            $table->index('created_at');
+            $table->index(['project_id', 'created_at']);
+            $table->index('level');
+
             $table->softDeletes();
         });
     }

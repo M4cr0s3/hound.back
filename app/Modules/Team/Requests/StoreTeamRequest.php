@@ -10,7 +10,7 @@ final class StoreTeamRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:teams,name'],
-            'slug' => ['string', 'max:255', 'unique:teams,slug'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:teams,slug'],
         ];
     }
 }

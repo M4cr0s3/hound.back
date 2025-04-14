@@ -11,13 +11,13 @@ final class AuthController
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        if (!$token = \Auth::attempt($request->validated())) {
+        if (! $token = \Auth::attempt($request->validated())) {
             throw new UnauthorizedException('Unauthorized.');
         }
 
         return response()->json([
             'status' => 'success',
-            'token' => $token
+            'token' => $token,
         ]);
 
     }

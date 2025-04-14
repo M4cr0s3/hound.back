@@ -12,10 +12,13 @@ final readonly class Metadata implements CastsAttributes
     {
         $data = json_decode($value ?? '{}', true) ?: [];
 
-        return (object)[
+        return (object) [
             'stacktrace' => $data['stacktrace'] ?? null,
             'context' => $data['context'] ?? null,
             'custom_data' => $data['custom_data'] ?? null,
+            'fingerprint' => $data['fingerprint'] ?? null,
+            'file' => $data['file'] ?? null,
+            'line' => $data['line'] ?? null,
         ];
     }
 
@@ -26,7 +29,7 @@ final readonly class Metadata implements CastsAttributes
         }
 
         if (is_object($value)) {
-            return json_encode((array)$value);
+            return json_encode((array) $value);
         }
 
         if (is_string($value)) {

@@ -24,7 +24,7 @@ final class CreateMaintainerCommand extends Command
             'name' => $name,
             'email' => $email,
             'password' => $password,
-            'role_id' => Role::where('title', 'Maintainer')->first()->id
+            'role_id' => Role::where('title', 'Maintainer')->first()->id,
         ]);
 
         $this->info('Мэйнтейнер успешно создан!');

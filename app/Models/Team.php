@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Modules\Team\Observers\TeamObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy(TeamObserver::class)]
 final class Team extends Model
 {
     public $timestamps = false;

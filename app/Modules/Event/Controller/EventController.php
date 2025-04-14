@@ -5,17 +5,15 @@ namespace App\Modules\Event\Controller;
 use App\Models\Event;
 use App\Modules\Event\Actions\StoreEventAction;
 use App\Modules\Event\Requests\StoreEventRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class EventController
 {
-    public function index()
-    {
+    public function index() {}
 
-    }
-
-    public function store(StoreEventRequest $request, StoreEventAction $action): \Illuminate\Http\JsonResponse
+    public function store(StoreEventRequest $request, StoreEventAction $action): JsonResponse
     {
         $action->execute($request->validated());
 
@@ -25,15 +23,9 @@ final readonly class EventController
         ], Response::HTTP_CREATED);
     }
 
-    public function show(Event $event)
-    {
-    }
+    public function show(Event $event) {}
 
-    public function update(Request $request, Event $event)
-    {
-    }
+    public function update(Request $request, Event $event) {}
 
-    public function destroy(Event $event)
-    {
-    }
+    public function destroy(Event $event) {}
 }

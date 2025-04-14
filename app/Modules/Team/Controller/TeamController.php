@@ -15,7 +15,9 @@ final readonly class TeamController
 {
     public function index(): ResourceCollection
     {
-        return TeamResource::collection(Team::all());
+        return \Cache::remember('teams', 60, function () {
+            return TeamResource::collection(Team::all());
+        });
     }
 
     public function store(StoreTeamRequest $request): JsonResponse
@@ -29,7 +31,7 @@ final readonly class TeamController
 
         return response()->json([
             'success' => true,
-            'message' => 'Team created successfully'
+            'message' => 'Team created successfully',
         ], Response::HTTP_CREATED);
     }
 
@@ -49,7 +51,7 @@ final readonly class TeamController
 
         return \response()->json([
             'success' => true,
-            'message' => 'Team updated successfully'
+            'message' => 'Team updated successfully',
         ]);
     }
 
@@ -59,7 +61,7 @@ final readonly class TeamController
 
         return \response()->json([
             'success' => true,
-            'message' => 'Team deleted successfully'
+            'message' => 'Team deleted successfully',
         ]);
     }
 
@@ -69,7 +71,7 @@ final readonly class TeamController
 
         return \response()->json([
             'success' => true,
-            'message' => 'Member added successfully'
+            'message' => 'Member added successfully',
         ]);
     }
 }

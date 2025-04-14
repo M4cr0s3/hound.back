@@ -5,7 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('issues', function (Blueprint $table) {
@@ -17,6 +18,8 @@ return new class extends Migration {
             $table->text('title');
             $table->string('culprit')->nullable();
             $table->string('status');
+            $table->string('priority');
+            $table->dateTime('due_date');
             $table->timestamps();
             $table->softDeletes();
         });

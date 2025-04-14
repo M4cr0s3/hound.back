@@ -15,27 +15,15 @@ final readonly class ProjectPolicy
         return true;
     }
 
-    public function view(User $user, Project $project): bool
-    {
-    }
+    public function view(User $user, Project $project): bool {}
 
-    public function create(User $user): bool
-    {
-    }
+    public function create(User $user): bool {}
 
-    public function update(User $user, Project $project): bool
-    {
-    }
+    public function update(User $user, Project $project): bool {}
 
-    public function delete(User $user, Project $project): bool
-    {
-    }
+    public function delete(User $user, Project $project): bool {}
 
-    public function restore(User $user, Project $project): bool
-    {
-    }
+    public function restore(User $user, Project $project): bool {}
 
-    public function forceDelete(User $user, Project $project): bool
-    {
-    }
+    public function forceDelete(User $user, Project $project): bool {}
 }

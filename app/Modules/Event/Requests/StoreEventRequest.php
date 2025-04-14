@@ -17,6 +17,7 @@ final class StoreEventRequest extends FormRequest
             'message' => ['required'],
             'release' => ['required'],
             'metadata' => ['required'],
+            'metadata.fingerprint' => ['required'],
             'count' => ['required', 'integer'],
         ];
     }
