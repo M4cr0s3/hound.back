@@ -18,7 +18,7 @@ final class RunHealthChecksCommand extends Command
             ->where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('last_checked_at')
-                    ->orWhere('last_checked_at', '<', now()->subMinutes(1));
+                    ->orWhere('last_checked_at', '<', now()->subMinutes());
             })
             ->get();
 
