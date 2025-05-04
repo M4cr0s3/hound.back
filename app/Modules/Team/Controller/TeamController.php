@@ -3,11 +3,13 @@
 namespace App\Modules\Team\Controller;
 
 use App\Models\Team;
-use App\Modules\Team\Requests\AddTeamMemberRequest;
+use App\Models\User;
+use App\Modules\Team\Requests\AddTeamMembersRequest;
 use App\Modules\Team\Requests\StoreTeamRequest;
 use App\Modules\Team\Requests\UpdateTeamRequest;
 use App\Modules\Team\Resources\TeamResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,8 +37,10 @@ final readonly class TeamController
         ], Response::HTTP_CREATED);
     }
 
-    public function show(Team $team): TeamResource
+    public function show(string $slug): TeamResource
     {
+        $team = Team::where('slug', $slug)->firstOrFail();
+
         return new TeamResource($team);
     }
 
@@ -65,13 +69,65 @@ final readonly class TeamController
         ]);
     }
 
-    public function addMember(Team $team, AddTeamMemberRequest $request): JsonResponse
+    public function availableUsers(Team $team, Request $request): JsonResponse
     {
-        $team->members()->attach($request->validated()['user_id']);
+        $query = User::whereDoesntHave('teams', function ($query) use ($team) {
+            $query->where('teams.id', $team->id);
+        });
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->paginate(10);
+
+        return response()->json([
+            'users' => $users->toArray()['data'],
+        ]);
+    }
+
+    public function addMembers(Team $team, AddTeamMembersRequest $request): JsonResponse
+    {
+        $team->members()->syncWithoutDetaching($request->validated()['user_ids']);
 
         return \response()->json([
             'success' => true,
             'message' => 'Member added successfully',
+        ]);
+    }
+
+    public function removeMember(Team $team, User $user): JsonResponse
+    {
+        $team->members()->detach($user->id);
+
+        return \response()->json([
+            'success' => true,
+            'message' => 'Member removed successfully',
+        ]);
+    }
+
+    public function availableToAssign(Request $request): JsonResponse
+    {
+        $query = Team::whereDoesntHave('assignments', function ($query) {
+            $query->where(['assignable_type' => Team::class]);
+        });
+
+        if ($request->has('q')) {
+            $search = $request->input('q');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        $teams = $query->paginate(10);
+
+        return response()->json([
+            'teams' => $teams->toArray()['data'],
         ]);
     }
 }

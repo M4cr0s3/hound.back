@@ -12,7 +12,7 @@ final readonly class CreateIssueAction
 {
     public function handle(array $data, User $creator): Issue
     {
-        return \DB::transaction(function () use ($data, $creator) {
+        return \DB::transaction(function () use ($data) {
             $issue = Issue::create([
                 'event_id' => $data['event_id'],
                 'title' => $data['title'],
@@ -37,7 +37,7 @@ final readonly class CreateIssueAction
 
     private function assignUsers(Issue $issue, array $userIds): void
     {
-        $issue->assignees()->sync($userIds);
+        $issue->assignments()->sync($userIds);
     }
 
     private function assignTeams(Issue $issue, array $teamIds): void

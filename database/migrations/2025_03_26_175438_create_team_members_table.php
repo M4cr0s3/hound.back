@@ -19,7 +19,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->primary('team_id', 'user_id');
+            $table->primary(['team_id', 'user_id']);
         });
     }
 

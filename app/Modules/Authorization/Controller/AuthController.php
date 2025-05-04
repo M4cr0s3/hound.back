@@ -2,23 +2,33 @@
 
 namespace App\Modules\Authorization\Controller;
 
+use App\Modules\Authorization\Actions\ProcessRefreshTokenAction;
+use App\Modules\Authorization\Actions\RefreshAction;
 use App\Modules\Authorization\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpFoundation\Cookie;
 
 final class AuthController
 {
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request, ProcessRefreshTokenAction $action): JsonResponse
     {
         if (! $token = \Auth::attempt($request->validated())) {
             throw new UnauthorizedException('Unauthorized.');
         }
 
+        $refresh = $action->handle(Auth::user(), $request->ip());
+
         return response()->json([
             'status' => 'success',
             'token' => $token,
-        ]);
+        ])->withCookie(new Cookie(
+            name: 'refresh_token',
+            value: $refresh->token,
+            expire: $refresh->active_to
+        ));
 
     }
 
@@ -40,11 +50,29 @@ final class AuthController
         ]);
     }
 
-    public function refresh(): JsonResponse
+    public function refresh(Request $request, RefreshAction $action): JsonResponse
     {
-        return response()->json([
-            'status' => 'success',
-            'token' => Auth::refresh(),
-        ]);
+        $user = $request->user('refresh');
+
+        if (! $user) {
+            throw new UnauthorizedException('Unauthorized.');
+        }
+
+        $refresh = $action->handle(
+            user: $user,
+            token: $request->cookie('refresh_token'),
+            ip: $request->ip(),
+        );
+
+        return response()
+            ->json([
+                'status' => 'success',
+                'token' => Auth::refresh(),
+            ])
+            ->withCookie(new Cookie(
+                name: 'refresh_token',
+                value: $refresh->token,
+                expire: $refresh->active_to
+            ));
     }
 }

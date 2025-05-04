@@ -1,0 +1,13 @@
+services:
+    typesense:
+        image: typesense/typesense:28.0
+        restart: on-failure
+        volumes:
+            - typesense-data:/data
+        ports:
+            - "8108:8108"
+        command: '--data-dir /data --api-key=xyz --enable-cors'
+
+volumes:
+    typesense-data:
+        driver: local

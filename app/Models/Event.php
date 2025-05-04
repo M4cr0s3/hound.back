@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Modules\Event\Casts\Metadata;
+use App\Modules\Event\Observer\EventObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(EventObserver::class)]
 final class Event extends Model
 {
     use SoftDeletes;

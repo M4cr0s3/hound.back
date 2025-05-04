@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Core\Filter\Filterable;
+use App\Modules\Activity\Traits\RecordsActivity;
 use App\Modules\Issue\Enum\IssuePriority;
 use App\Modules\Issue\Enum\IssueStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 final class Issue extends Model
 {
-    use SoftDeletes;
+    use Filterable, RecordsActivity, Searchable, SoftDeletes;
 
     protected $fillable = [
         'event_id',
@@ -26,7 +29,8 @@ final class Issue extends Model
     {
         return [
             'status' => IssueStatus::class,
-            'priority' => IssuePriority::class
+            'priority' => IssuePriority::class,
+            'due_date' => 'datetime',
         ];
     }
 
@@ -35,18 +39,18 @@ final class Issue extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function assignees(): BelongsToMany
+    public function assignments(): HasMany
     {
-        return $this->belongsToMany(
-            User::class,
-            'issue_assigns',
-            'issue_id',
-            'user_id'
-        );
+        return $this->hasMany(IssueAssignment::class);
     }
 
-    public function teams(): BelongsToMany
+    public function comments(): HasMany
     {
-        return $this->belongsToMany(Team::class, 'issue_team');
+        return $this->hasMany(Comment::class);
+    }
+
+    public function toSearchableArray(): array
+    {
+        return ['id' => (string) $this->id, 'title' => $this->title, 'created_at' => $this->created_at->unix()];
     }
 }

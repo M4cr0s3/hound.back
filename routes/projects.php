@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Notification\Controller\NotificationRuleController;
 use App\Modules\Project\Controller\ProjectController;
 
 Route::group(['prefix' => 'projects', 'middleware' => 'jwt.auth'], function () {
@@ -20,6 +21,13 @@ Route::group(['prefix' => 'projects', 'middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => '{project}/events'], function () {
 
         Route::get('/', [ProjectController::class, 'events']);
+
+    });
+
+    Route::group(['prefix' => '{project}/notification-rules'], function () {
+
+        Route::get('/', [NotificationRuleController::class, 'index']);
+        Route::post('/', [NotificationRuleController::class, 'store']);
 
     });
 
