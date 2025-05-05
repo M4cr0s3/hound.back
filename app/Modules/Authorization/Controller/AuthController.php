@@ -20,7 +20,7 @@ final class AuthController
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
-            ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         $refresh = $action->handle(Auth::user(), $request->ip());
