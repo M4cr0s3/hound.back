@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 
@@ -30,6 +31,18 @@ final class Project extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function issues(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Issue::class,
+            Event::class,
+            'project_id',
+            'event_id',
+            'id',
+            'id'
+        );
     }
 
     public function endpoints(): HasMany

@@ -7,6 +7,7 @@ use App\Modules\Project\Actions\CreateProjectAction;
 use App\Modules\Project\Actions\UpdateProjectAction;
 use App\Modules\Project\Requests\StoreProjectRequest;
 use App\Modules\Project\Requests\UpdateProjectRequest;
+use App\Modules\Project\Resources\DashboardProjectResource;
 use App\Modules\Project\Resources\LastDayStatisticResource;
 use App\Modules\Project\Resources\ProjectResource;
 use Illuminate\Http\JsonResponse;
@@ -90,5 +91,12 @@ final readonly class ProjectController
             ->latest()
             ->when($request->get('level'), fn ($q, $level) => $q->ofLevel($level))
             ->paginate($request->get('per_page', 10));
+    }
+
+    public function dashboard(): ResourceCollection
+    {
+        return DashboardProjectResource::collection(
+            Project::with('team', 'issues')->get()
+        );
     }
 }
