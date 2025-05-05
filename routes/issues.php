@@ -5,6 +5,7 @@ use App\Modules\Issue\Controller\IssueController;
 Route::group(['prefix' => 'issues', 'middleware' => 'jwt.auth'], function () {
 
     Route::get('/', [IssueController::class, 'index']);
+    Route::get('/dashboard', [IssueController::class, 'dashboard']);
     Route::get('/{issue}', [IssueController::class, 'show']);
     Route::patch('/{issue}', [IssueController::class, 'update']);
     Route::post('/', [IssueController::class, 'store']);
