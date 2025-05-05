@@ -10,13 +10,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 
 final class AuthController
 {
     public function login(LoginRequest $request, ProcessRefreshTokenAction $action): JsonResponse
     {
         if (! $token = \Auth::attempt($request->validated())) {
-            throw new UnauthorizedException('Unauthorized.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials',
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $refresh = $action->handle(Auth::user(), $request->ip());
