@@ -128,11 +128,10 @@ final readonly class IssueController
     }
 
     public function assign(
-        Issue                $issue,
+        Issue $issue,
         AssignToIssueRequest $request,
-        AssignToIssueAction  $action
-    ): JsonResponse
-    {
+        AssignToIssueAction $action
+    ): JsonResponse {
         $action->handle($issue, $request->validated());
 
         return response()->json([
@@ -142,12 +141,11 @@ final readonly class IssueController
     }
 
     public function removeAssign(
-        Issue               $issue,
-        int                 $assigneeId,
+        Issue $issue,
+        int $assigneeId,
         RemoveAssignRequest $request,
-        RemoveAssignAction  $action
-    ): JsonResponse
-    {
+        RemoveAssignAction $action
+    ): JsonResponse {
         $action->handle($issue, [
             'assignee_id' => $assigneeId,
             ...$request->validated(),
