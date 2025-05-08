@@ -10,6 +10,7 @@ use App\Modules\Project\Requests\UpdateProjectRequest;
 use App\Modules\Project\Resources\DashboardProjectResource;
 use App\Modules\Project\Resources\LastDayStatisticResource;
 use App\Modules\Project\Resources\ProjectResource;
+use App\Modules\Project\Services\ProjectStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -19,34 +20,55 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class ProjectController
 {
+    public function __construct(
+        private ProjectStatsService $statsService
+    ) {}
+
     public function index(): ResourceCollection
     {
-        return \Cache::remember('projects', 60, function () {
-            return ProjectResource::collection(Project::all());
-        });
+        return \Cache::remember(
+            key: 'projects',
+            ttl: 60,
+            callback: fn () => ProjectResource::collection(Project::all())
+        );
     }
 
     public function store(StoreProjectRequest $request, CreateProjectAction $action): JsonResponse
     {
-        $action->execute($request->validated());
+        $action->execute(data: $request->validated());
+
+        return response()->json(
+            data: [
+                'success' => true,
+                'message' => 'Project created successfully',
+            ],
+            status: Response::HTTP_CREATED
+        );
+    }
+
+    public function show(Project $project): JsonResponse
+    {
+        $project->load([
+            'team',
+            'endpoints',
+            'notificationRules',
+            'events' => fn ($query) => $query->latest()->limit(5),
+            'issues' => fn ($query) => $query->with('event')->latest('issues.created_at')->limit(5),
+        ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Project created successfully',
-        ], Response::HTTP_CREATED);
+            'project' => $project,
+            'stats' => $this->statsService->getSummaryStats(project: $project),
+            'daily_stats' => $this->statsService->getDailyStats(project: $project),
+        ]);
     }
 
-    public function show(Project $project): ProjectResource
+    public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action): JsonResponse
     {
-        return new ProjectResource($project);
-    }
-
-    public function update(
-        UpdateProjectRequest $request,
-        Project $project,
-        UpdateProjectAction $action
-    ): JsonResponse {
-        $action->execute($project, $request->validated());
+        $action->execute(
+            project: $project,
+            data: $request->validated()
+        );
 
         return response()->json([
             'success' => true,
@@ -68,11 +90,8 @@ final readonly class ProjectController
     public function getStatsForLastDay(): ResourceCollection
     {
         $projects = Project::with([
-            'events' => fn ($q) => $q->lastDay(),
-            'eventHourlyStats' => fn ($q) => $q->whereBetween('created_at', [
-                now()->subHours(5),
-                now()->addHours(5),
-            ]),
+            'events',
+            'eventHourlyStats' => fn ($q) => $q->whereBetween('created_at', [now()->subHours(5), now()->addHours(5)]),
             'endpoints' => fn ($q) => $q->where('last_checked_at', '>=', now()->subDay())
                 ->withAvg('results', 'response_time'),
         ])->get();
@@ -82,7 +101,7 @@ final readonly class ProjectController
 
     public function healthcheck(Project $project): Collection
     {
-        return $project->endpoints;
+        return collect($project->endpoints);
     }
 
     public function events(Request $request, Project $project): LengthAwarePaginator
@@ -90,7 +109,7 @@ final readonly class ProjectController
         return $project->events()
             ->latest()
             ->when($request->get('level'), fn ($q, $level) => $q->ofLevel($level))
-            ->paginate($request->get('per_page', 10));
+            ->paginate(perPage: $request->get('per_page', 10));
     }
 
     public function dashboard(): ResourceCollection
@@ -98,5 +117,15 @@ final readonly class ProjectController
         return DashboardProjectResource::collection(
             Project::with('team', 'issues')->get()
         );
+    }
+
+    public function stats(Project $project): JsonResponse
+    {
+        return response()->json($this->statsService->getTrendedStats(project: $project));
+    }
+
+    public function weeklyStats(Project $project): JsonResponse
+    {
+        return response()->json($this->statsService->getWeeklyStats(project: $project));
     }
 }

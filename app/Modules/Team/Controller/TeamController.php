@@ -10,6 +10,7 @@ use App\Modules\Team\Requests\UpdateTeamRequest;
 use App\Modules\Team\Resources\TeamResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,9 +38,9 @@ final readonly class TeamController
         ], Response::HTTP_CREATED);
     }
 
-    public function show(string $slug): TeamResource
+    public function show(string $slug): JsonResource
     {
-        $team = Team::where('slug', $slug)->firstOrFail();
+        $team = Team::with(['members', 'projects', 'assignments.issue'])->where('slug', $slug)->firstOrFail();
 
         return new TeamResource($team);
     }

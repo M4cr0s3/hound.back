@@ -32,4 +32,25 @@ final class EventHourlyStat extends Model
     {
         return $query->where('created_at', '>=', now($timezone)->subDay());
     }
+
+    public static function getTrendData($projectId, $period = 'day'): array
+    {
+        $currentPeriod = now()->sub($period);
+
+        $currentCount = self::where('project_id', $projectId)
+            ->where('hour', '>=', $currentPeriod)
+            ->sum('total_events');
+
+        $previousCount = self::where('project_id', $projectId)
+            ->whereBetween('hour', [
+                $currentPeriod->copy()->sub($period),
+                $currentPeriod,
+            ])
+            ->sum('total_events');
+
+        return [
+            'current' => $currentCount,
+            'previous' => $previousCount,
+        ];
+    }
 }

@@ -16,6 +16,8 @@ Route::group(['prefix' => 'projects', 'middleware' => 'jwt.auth'], function () {
     Route::group(['prefix' => 'stats'], function () {
 
         Route::get('/day', [ProjectController::class, 'getStatsForLastDay']);
+        Route::get('/{project}', [ProjectController::class, 'stats']);
+        Route::get('/{project}/week', [ProjectController::class, 'weeklyStats']);
 
     });
 

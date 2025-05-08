@@ -34,12 +34,12 @@ final class LastDayStatisticResource extends JsonResource
 
     protected function getTotalEvents(): int
     {
-        return $this->resource->events->count();
+        return $this->resource->events()->count();
     }
 
     protected function getErrorCount(): int
     {
-        return $this->resource->events->where('level', 'error')->count();
+        return $this->resource->events()->lastDay()->where('level', 'error')->count();
     }
 
     protected function getAvgResponseTime(): float
