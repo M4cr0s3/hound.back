@@ -71,7 +71,7 @@ final class AuthController
         return response()
             ->json([
                 'status' => 'success',
-                'token' => Auth::refresh(),
+                'token' => Auth::tokenById($user->id),
             ])
             ->withCookie(new Cookie(
                 name: 'refresh_token',
