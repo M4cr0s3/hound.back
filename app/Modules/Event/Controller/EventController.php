@@ -3,6 +3,7 @@
 namespace App\Modules\Event\Controller;
 
 use App\Models\Event;
+use App\Modules\Event\Actions\GetDashboardStatisticAction;
 use App\Modules\Event\Actions\StoreEventAction;
 use App\Modules\Event\Requests\StoreEventRequest;
 use Illuminate\Http\JsonResponse;
@@ -28,4 +29,9 @@ final readonly class EventController
     public function update(Request $request, Event $event) {}
 
     public function destroy(Event $event) {}
+
+    public function dashboard(GetDashboardStatisticAction $action): JsonResponse
+    {
+        return response()->json($action->handle(Event::get()));
+    }
 }

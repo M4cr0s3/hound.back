@@ -5,6 +5,7 @@ use App\Modules\Event\Controller\EventController;
 Route::group(['prefix' => 'events', 'middleware' => 'jwt.auth'], function () {
 
     Route::get('/', [EventController::class, 'index']);
+    Route::get('/dashboard', [EventController::class, 'dashboard']);
     Route::post('/', [EventController::class, 'store']);
     Route::get('/{event}', [EventController::class, 'show']);
     Route::put('/{event}', [EventController::class, 'update']);

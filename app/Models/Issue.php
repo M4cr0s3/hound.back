@@ -6,6 +6,7 @@ use App\Core\Filter\Filterable;
 use App\Modules\Activity\Traits\RecordsActivity;
 use App\Modules\Issue\Enum\IssuePriority;
 use App\Modules\Issue\Enum\IssueStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,6 +48,11 @@ final class Issue extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function scopeLastDay(Builder $query): Builder
+    {
+        return $query->where('created_at', '>=', now()->subDay());
     }
 
     public function toSearchableArray(): array
