@@ -2,10 +2,13 @@
 
 namespace App\Modules\User\Controller;
 
+use App\Models\IssueAssignment;
 use App\Models\User;
 use App\Modules\Invite\Actions\CreateInviteAction;
+use App\Modules\Issue\Enum\IssueStatus;
 use App\Modules\User\Actions\CreateUserAction;
 use App\Modules\User\Filters\UserSearchFilter;
+use App\Modules\User\Requests\ChangePasswordRequest;
 use App\Modules\User\Requests\StoreUserRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -80,6 +83,51 @@ final class UserController
 
         return response()->json([
             'users' => $users->toArray()['data'],
+        ]);
+    }
+
+    public function profile(): JsonResponse
+    {
+        $user = \Auth::user();
+        $user->load('assignments.issue.project', 'teams', 'role', 'assignments.issue.event');
+
+        $assignments = IssueAssignment::where([
+            'assignable_type' => User::class,
+            'assignable_id' => $user->id,
+        ]);
+
+        $stats = [
+            'teams' => $user->teams->count(),
+            'open_issues' => (clone $assignments)->whereHas('issue', function (Builder $q) {
+                $q->where('status', IssueStatus::OPEN);
+            })->count(),
+            'resolved_issues' => (clone $assignments)->whereHas('issue', function (Builder $q) {
+                $q->where('status', IssueStatus::RESOLVED);
+            })->count(),
+        ];
+
+        return response()->json([
+            'user' => $user,
+            'stats' => $stats,
+        ]);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        if (! \Hash::check($request->get('current_password'), \Auth::user()->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The provided password was incorrect.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        \Auth::user()->update([
+            'password' => $request->get('password'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed successfully',
         ]);
     }
 }
