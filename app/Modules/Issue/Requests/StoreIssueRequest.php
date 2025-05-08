@@ -6,7 +6,7 @@ use App\Modules\Issue\Enum\IssuePriority;
 use App\Modules\Issue\Enum\IssueStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreIssueRequest extends FormRequest
+final class StoreIssueRequest extends FormRequest
 {
     public function rules(): array
     {

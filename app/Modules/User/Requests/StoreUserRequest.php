@@ -9,7 +9,7 @@ final class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'unique:users,email'],
+            'email' => ['required', 'email:rfc,dns', 'unique:users,email'],
             'role_id' => ['required', 'exists:roles,id'],
             'name' => ['required'],
         ];
