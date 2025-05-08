@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 
@@ -48,6 +49,18 @@ final class Issue extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function project(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Project::class,
+            Event::class,
+            'id',
+            'id',
+            'event_id',
+            'project_id'
+        );
     }
 
     public function scopeLastDay(Builder $query): Builder
