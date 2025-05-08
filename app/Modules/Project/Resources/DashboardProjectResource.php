@@ -32,13 +32,13 @@ final class DashboardProjectResource extends JsonResource
 
     private function getResolvedIssuesCount(): ?int
     {
-//        return $this->resource->issues()->lastDay()->where('status', IssueStatus::RESOLVED)->count();
+        //        return $this->resource->issues()->lastDay()->where('status', IssueStatus::RESOLVED)->count();
         return $this->resource->issues->where('status', IssueStatus::RESOLVED)->count();
     }
 
     private function getTotalIssuesCount(): ?int
     {
-//        return $this->resource->issues()->lastDay()->count();
+        //        return $this->resource->issues()->lastDay()->count();
         return $this->resource->issues->count();
     }
 }

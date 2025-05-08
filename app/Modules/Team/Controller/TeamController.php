@@ -8,6 +8,7 @@ use App\Modules\Team\Requests\AddTeamMembersRequest;
 use App\Modules\Team\Requests\StoreTeamRequest;
 use App\Modules\Team\Requests\UpdateTeamRequest;
 use App\Modules\Team\Resources\TeamResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -113,8 +114,9 @@ final readonly class TeamController
 
     public function availableToAssign(Request $request): JsonResponse
     {
-        $query = Team::whereDoesntHave('assignments', function ($query) {
-            $query->where(['assignable_type' => Team::class]);
+        $query = Team::whereDoesntHave('assignments', function (Builder $query) use ($request) {
+            $query->where('assignable_type', Team::class)
+                ->where('issue_id', $request->get('issue_id'));
         });
 
         if ($request->has('q')) {

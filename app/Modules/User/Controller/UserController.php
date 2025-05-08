@@ -7,6 +7,7 @@ use App\Modules\Invite\Actions\CreateInviteAction;
 use App\Modules\User\Actions\CreateUserAction;
 use App\Modules\User\Filters\UserSearchFilter;
 use App\Modules\User\Requests\StoreUserRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -62,8 +63,9 @@ final class UserController
 
     public function availableToAssign(Request $request): JsonResponse
     {
-        $query = User::whereDoesntHave('assignments', function ($query) {
-            $query->where(['assignable_type' => User::class]);
+        $query = User::whereDoesntHave('assignments', function (Builder $q) use ($request) {
+            $q->where('assignable_type', User::class)
+                ->where('issue_id', $request->get('issue_id'));
         });
 
         if ($request->has('q')) {
