@@ -27,7 +27,10 @@ final readonly class DsnSignatureMiddleware
             return response()->json(['error' => 'Wrong signature'], Response::HTTP_FORBIDDEN);
         }
 
-        $request->attributes->set('project_id', $key->project->id);
+        $request->merge([
+            ...$request->input(),
+            'project_id' => $key->project->id,
+        ]);
 
         return $next($request);
     }
