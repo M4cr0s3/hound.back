@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //        Role::factory(1)->create();
+        Role::factory(1)->create();
 
         //                Event::create([
         //                    'event_id' => Uuid::v7(),
