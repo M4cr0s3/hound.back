@@ -30,10 +30,10 @@ final class GetDashboardStatisticAction
                 ),
             ],
             'unresolved_issues' => [
-                'value' => $this->getInProgressIssues(),
+                'value' => $this->getUnresolvedIssues(),
                 'change_percentage' => $this->calculateChangePercentage(
-                    $this->getInProgressIssues(),
-                    $this->getInProgressIssuesYesterday()
+                    $this->getUnresolvedIssues(),
+                    $this->getUnresolvedIssuesYesterday()
                 ),
             ],
             'resolved_issues' => [
@@ -58,9 +58,9 @@ final class GetDashboardStatisticAction
         return $this->resource->count();
     }
 
-    private function getInProgressIssues(): int
+    private function getUnresolvedIssues(): int
     {
-        return Issue::where('status', IssueStatus::IN_PROGRESS)->count();
+        return Issue::whereIn('status', [IssueStatus::OPEN, IssueStatus::IN_PROGRESS])->count();
     }
 
     private function getResolvedIssues(): int
@@ -78,9 +78,9 @@ final class GetDashboardStatisticAction
         return $this->resource->where('created_at', now()->subDay())->count();
     }
 
-    private function getInProgressIssuesYesterday(): int
+    private function getUnresolvedIssuesYesterday(): int
     {
-        return Issue::where('status', IssueStatus::IN_PROGRESS)
+        return Issue::where('status', [IssueStatus::OPEN, IssueStatus::IN_PROGRESS])
             ->whereDate('created_at', now()->subDay())
             ->count();
     }
