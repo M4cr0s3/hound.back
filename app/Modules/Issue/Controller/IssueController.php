@@ -54,11 +54,12 @@ final readonly class IssueController
 
     public function store(StoreIssueRequest $request, CreateIssueAction $action): JsonResponse
     {
-        $action->handle($request->validated(), $request->user());
+        $issue = $action->handle($request->validated(), $request->user());
 
         return response()->json([
             'success' => true,
             'message' => 'Issue created successfully',
+            'data' => $issue,
         ], Response::HTTP_CREATED);
     }
 

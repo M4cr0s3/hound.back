@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 
@@ -43,6 +44,11 @@ final class Project extends Model
             'id',
             'id'
         );
+    }
+
+    public function key(): HasOne
+    {
+        return $this->hasOne(ProjectKey::class);
     }
 
     public function endpoints(): HasMany

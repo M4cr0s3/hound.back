@@ -54,6 +54,7 @@ final readonly class ProjectController
             'notificationRules',
             'events' => fn ($query) => $query->latest()->limit(5),
             'issues' => fn ($query) => $query->with('event')->latest('issues.created_at')->limit(5),
+            'key',
         ]);
 
         return response()->json([
