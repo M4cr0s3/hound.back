@@ -7,7 +7,6 @@ use App\Modules\Authorization\Actions\RefreshAction;
 use App\Modules\Authorization\Requests\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +22,7 @@ final class AuthController
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $refresh = $action->handle(Auth::user(), $request->ip());
+        $refresh = $action->handle(\Auth::user(), $request->ip());
 
         return response()->json([
             'status' => 'success',
@@ -36,22 +35,21 @@ final class AuthController
 
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        $request->cookies->remove('refresh_token');
-        Auth::logout();
+        \Auth::logout();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
-        ]);
+        ])->withCookie(new Cookie('refresh_token', '', now()->subDay()));
     }
 
     public function user(): JsonResponse
     {
         return response()->json([
             'status' => 'success',
-            'user' => Auth::user(),
+            'user' => \Auth::user(),
         ]);
     }
 
@@ -72,7 +70,7 @@ final class AuthController
         return response()
             ->json([
                 'status' => 'success',
-                'token' => Auth::tokenById($user->id),
+                'token' => \Auth::tokenById($user->id),
             ])
             ->withCookie(new Cookie(
                 name: 'refresh_token',
