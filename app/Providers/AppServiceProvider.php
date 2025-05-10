@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Project;
+use App\Models\Comment;
 use App\Modules\Authorization\Guard\RefreshTokenGuard;
+use App\Modules\Comment\Policy\CommentPolicy;
 use App\Modules\Integration\Github\GithubApiClient;
 use App\Modules\Integration\Github\GithubRepositoryProvider;
 use App\Modules\Project\Policy\ProjectPolicy;
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
         \Gate::policy(Project::class, ProjectPolicy::class);
+        \Gate::policy(Comment::class, CommentPolicy::class);
 
         \Auth::extend('refresh', function ($app, $name, array $config) {
             return new RefreshTokenGuard(
