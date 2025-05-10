@@ -31,7 +31,15 @@ final readonly class EventController
 
     public function update(Request $request, Event $event) {}
 
-    public function destroy(Event $event) {}
+    public function destroy(Event $event): JsonResponse
+    {
+        $event->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event deleted successfully',
+        ]);
+    }
 
     public function dashboard(GetDashboardStatisticAction $action): JsonResponse
     {
