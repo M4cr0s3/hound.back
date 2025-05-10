@@ -14,7 +14,8 @@ return new class extends Migration
             $table->string('token');
             $table->dateTime('active_to');
             $table->foreignIdFor(User::class)
-                ->constrained();
+                ->constrained()
+                ->cascadeOnDelete();
             $table->string('ip');
             $table->timestamps();
         });
