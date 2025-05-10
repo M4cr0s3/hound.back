@@ -24,7 +24,10 @@ final readonly class EventController
         ], Response::HTTP_CREATED);
     }
 
-    public function show(Event $event) {}
+    public function show(Event $event): JsonResponse
+    {
+        return response()->json($event->load('issues', 'project'));
+    }
 
     public function update(Request $request, Event $event) {}
 
