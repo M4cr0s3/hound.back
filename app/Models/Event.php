@@ -58,6 +58,10 @@ final class Event extends Model
 
             $stats->save();
         });
+
+        self::deleting(function (Event $event) {
+            $event->issues()->delete();
+        });
     }
 
     public function project(): BelongsTo
