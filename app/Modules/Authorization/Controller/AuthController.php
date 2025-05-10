@@ -36,8 +36,9 @@ final class AuthController
 
     }
 
-    public function logout(): JsonResponse
+    public function logout(Request $request): JsonResponse
     {
+        $request->cookies->remove('refresh_token');
         Auth::logout();
 
         return response()->json([
