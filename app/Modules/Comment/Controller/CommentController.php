@@ -14,7 +14,7 @@ final readonly class CommentController
 
         return response()->json([
             'success' => true,
-            'message' => 'Comment deleted successfully'
+            'message' => 'Comment deleted successfully',
         ]);
     }
 }

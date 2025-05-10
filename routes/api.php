@@ -20,4 +20,6 @@ require_once __DIR__.'/notificationRules.php';
 
 require_once __DIR__.'/invites.php';
 
+require_once __DIR__.'/comments.php';
+
 Route::get('/search', [SearchController::class, 'globalSearch']);
