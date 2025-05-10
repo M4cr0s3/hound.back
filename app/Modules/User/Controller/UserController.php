@@ -52,7 +52,7 @@ final class UserController
     public function me(): JsonResponse
     {
         return response()->json([
-            'user' => \Auth::user(),
+            'user' => \Auth::user()->load('role'),
         ]);
     }
 
