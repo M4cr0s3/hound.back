@@ -15,5 +15,3 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::get('/refresh', [AuthController::class, 'refresh']);
 });
-
-// TODO: Add refresh token
