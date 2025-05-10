@@ -108,7 +108,7 @@ final readonly class ProjectController
     public function events(Request $request, Project $project): LengthAwarePaginator
     {
         return $project->events()
-            ->latest()
+            ->latest('updated_at')
             ->when($request->get('level'), fn ($q, $level) => $q->ofLevel($level))
             ->paginate(perPage: $request->get('per_page', 10));
     }
