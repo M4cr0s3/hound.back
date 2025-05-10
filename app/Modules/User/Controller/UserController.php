@@ -130,4 +130,14 @@ final class UserController
             'message' => 'Password changed successfully',
         ]);
     }
+
+    public function destroy(User $user): JsonResponse
+    {
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully',
+        ]);
+    }
 }

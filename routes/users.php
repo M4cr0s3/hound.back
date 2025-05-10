@@ -11,5 +11,6 @@ Route::group(['prefix' => 'users', 'middleware' => 'jwt.auth'], function () {
     Route::post('/available', [UserController::class, 'availableToAssign']);
     Route::post('/profile/password', [UserController::class, 'changePassword']);
     Route::post('/', [UserController::class, 'store']);
+    Route::delete('/{user}', [UserController::class, '']);
 
 });
