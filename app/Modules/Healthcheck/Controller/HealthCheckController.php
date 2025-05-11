@@ -24,6 +24,7 @@ final class HealthCheckController
         $results = $healthCheckEndpoint->results()
             ->where('created_at', '>=', now()->subDay())
             ->orderBy('created_at', 'desc')
+            ->limit(25)
             ->get();
 
         $stats = [
