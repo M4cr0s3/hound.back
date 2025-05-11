@@ -23,21 +23,19 @@ final class HealthCheckController
     {
         $results = $healthCheckEndpoint->results()
             ->where('created_at', '>=', now()->subDay())
-            ->orderBy('created_at', 'desc')
-            ->limit(25)
-            ->get();
+            ->orderBy('created_at', 'desc');
 
         $stats = [
-            'avg_response_time' => $results->avg('response_time') ?? 0,
-            'uptime_percentage' => $results->count() > 0
-                ? ($results->where('success', true)->count() / $results->count()) * 100
+            'avg_response_time' => (clone $results)->avg('response_time') ?? 0,
+            'uptime_percentage' =>  (clone $results)->count() > 0
+                ? ((clone $results)->where('success', true)->count() / (clone $results)->count()) * 100
                 : 100,
-            'total_checks' => $results->count(),
-            'success_checks' => $results->where('success', true)->count(),
-            'failure_checks' => $results->where('success', false)->count(),
+            'total_checks' => (clone $results)->count(),
+            'success_checks' => (clone $results)->where('success', true)->count(),
+            'failure_checks' => (clone $results)->where('success', false)->count(),
         ];
 
-        return JsonResource::collection($results)
+        return JsonResource::collection($results->limit(25)->get())
             ->additional([
                 'stats' => $stats,
                 'endpoint' => $healthCheckEndpoint,
