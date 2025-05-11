@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 #[ObservedBy(EventObserver::class)]
 final class Event extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Searchable;
 
     protected $fillable = [
         'project_id',
@@ -36,7 +37,6 @@ final class Event extends Model
         ];
     }
 
-    // TODO: оставить поддержку sqlite?
     protected static function booted(): void
     {
         self::created(function (Event $event) {
@@ -94,5 +94,10 @@ final class Event extends Model
         $projectId = $project instanceof Project ? $project->id : $project;
 
         return $query->where('project_id', $projectId);
+    }
+
+    public function toSearchableArray(): array
+    {
+        return ['id' => (string) $this->id] + $this->toArray();
     }
 }

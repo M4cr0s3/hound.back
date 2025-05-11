@@ -234,6 +234,22 @@ return [
                     'query_by' => 'name,email',
                 ],
             ],
+            \App\Models\Event::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+                        ['name' => 'environment', 'type' => 'string'],
+                        ['name' => 'type', 'type' => 'string'],
+                        ['name' => 'level', 'type' => 'string'],
+                        ['name' => 'event_id', 'type' => 'string'],
+                        ['name' => 'message', 'type' => 'string'],
+                        ['name' => 'release', 'type' => 'string'],
+                    ],
+                ],
+                'search-parameters' => [
+                    'query_by' => 'environment,type,level,event_id,message,release',
+                ],
+            ],
         ],
     ],
 

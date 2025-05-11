@@ -2,6 +2,7 @@
 
 namespace App\Modules\Search\Controller;
 
+use App\Models\Event;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Team;
@@ -23,6 +24,9 @@ final readonly class SearchController
             )
             ->concat(
                 $this->searchWithType(Project::class, 'project', $searchTerm)
+            )
+            ->concat(
+                $this->searchWithType(Event::class, 'event', $searchTerm)
             )
             ->take(10)
             ->values()
